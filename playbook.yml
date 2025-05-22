@@ -1,0 +1,9 @@
+- name: Deploy Full App Stack
+  hosts: all
+  become: true
+  roles:
+    - docker
+    - network
+    - db
+    - app
+    - proxy
