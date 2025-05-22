@@ -1,0 +1,37 @@
+name: Deploy to Production
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]  # Le nom exact du workflow du 1er repo
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy latest backend image
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy via SSH
+        env:
+          HOST: lucas.congras.takima.cloud
+          USER: admin
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $USER@$HOST << 'EOF'
+            echo "Pulling latest Docker image..."
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api-backend:latest
+
+            echo "Stopping and removing old container..."
+            docker stop simple-api-backend || true
+            docker rm simple-api-backend || true
+
+            echo "Starting new container..."
+            docker run -d --name simple-api-backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api-backend:latest
+          EOF

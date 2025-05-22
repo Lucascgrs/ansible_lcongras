@@ -1,0 +1,11 @@
+- name: Run HTTP server container
+  docker_container:
+    name: httpd
+    image: lulucgrs/tp-devops-simple-api-httpd
+    pull: yes
+    state: started
+    restart_policy: always
+    published_ports:
+      - "80:80"
+    networks:
+      - name: my-network

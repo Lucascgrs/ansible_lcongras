@@ -1,0 +1,13 @@
+- name: Run simple-api container
+  docker_container:
+    name: simple-api
+    image: lulucgrs/tp-devops-simple-api-backend
+    pull: yes
+    state: started
+    restart_policy: always
+    env:
+      DATABASE_HOST: database
+      DATABASE_USERNAME: usr
+      DATABASE_PASSWORD: pwd
+    networks:
+      - name: my-network

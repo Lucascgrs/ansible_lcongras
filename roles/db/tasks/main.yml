@@ -1,0 +1,23 @@
+- name: Remove old PostgreSQL volume (incompatible with 14)
+  docker_volume:
+    name: db-volume
+    state: absent
+
+- name: Create db volume
+  docker_volume:
+    name: db-volume
+
+- name: Run PostgreSQL container
+  docker_container:
+    name: database
+    image: lulucgrs/tp-devops-simple-api-database
+    pull: yes
+    state: started
+    restart_policy: always
+    env:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    networks:
+      - name: my-network
