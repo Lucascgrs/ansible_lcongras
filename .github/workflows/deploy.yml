@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -20,7 +24,6 @@ jobs:
           HOST: lucas.congras.takima.cloud
           USER: admin
         run: |
-          ls -R
-          ansible-playbook -i inventories/setup.yml /ansible/playbook.yml \
+          ansible-playbook -i inventories/setup.yml playbook.yml \
             --user=admin \
             --private-key=~/.ssh/id_rsa
