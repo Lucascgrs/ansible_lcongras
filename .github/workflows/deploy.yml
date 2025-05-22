@@ -26,6 +26,7 @@ jobs:
           USER: admin
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
+          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}"
           ansible-playbook -i inventories/setup.yml playbook.yml \
             --user=admin \
             --private-key=~/.ssh/id_rsa
