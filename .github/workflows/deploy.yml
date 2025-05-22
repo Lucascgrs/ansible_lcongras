@@ -24,7 +24,6 @@ jobs:
         env:
           HOST: lucas.congras.takima.cloud
           USER: admin
-          #ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           ansible-playbook -i inventories/setup.yml playbook.yml \
             --user=admin \
