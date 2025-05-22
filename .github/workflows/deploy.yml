@@ -21,6 +21,6 @@ jobs:
           USER: admin
         run: |
           ls -R
-          ansible-playbook -i inventories/setup.yml playbook.yml \
+          ansible-playbook -i inventories/setup.yml /ansible/playbook.yml \
             --user=admin \
             --private-key=~/.ssh/id_rsa
