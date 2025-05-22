@@ -12,7 +12,7 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Deploy via SSH
@@ -20,14 +20,6 @@ jobs:
           HOST: lucas.congras.takima.cloud
           USER: admin
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $USER@$HOST << 'EOF'
-            echo "Pulling latest Docker image..."
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api-backend:latest
-
-            echo "Stopping and removing old container..."
-            docker stop simple-api-backend || true
-            docker rm simple-api-backend || true
-
-            echo "Starting new container..."
-            docker run -d --name simple-api-backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api-backend:latest
-          EOF
+          ansible-playbook -i inventories/setup.yml playbook.yml \
+            --user=admin \
+            --private-key=~/.ssh/id_rsa
